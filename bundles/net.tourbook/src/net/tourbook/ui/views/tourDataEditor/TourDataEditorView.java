@@ -202,7 +202,7 @@ public class TourDataEditorView extends ViewPart implements ISaveablePart2, ITou
 	//
 	private static final String					GRAPH_LABEL_HEARTBEAT_UNIT		= net.tourbook.common.Messages.Graph_Label_Heartbeat_Unit;
 	private static final String					VALUE_UNIT_K_CALORIES			= net.tourbook.ui.Messages.Value_Unit_KCalories;
-	//
+//	//
 	private static final int					COLUMN_SPACING					= 20;
 	//
 	private final IPreferenceStore				_prefStore						= TourbookPlugin.getPrefStore();
@@ -450,7 +450,7 @@ public class TourDataEditorView extends ViewPart implements ISaveablePart2, ITou
 	private ActionOpenMarkerDialog				_actionOpenMarkerDialog;
 	private ActionOpenPrefDialog				_actionOpenTourTypePrefs;
 	private ActionSaveTour						_actionSaveTour;
-	private ActionSetStartDistanceTo0			_actionSetStartDistanceTo0;
+	private ActionSetStartDistanceTo0			_actionSetStartDistanceTo_0;
 	private ActionSplitTour						_actionSplitTour;
 	private ActionToggleReadEditMode			_actionToggleReadEditMode;
 	private ActionToggleRowSelectMode			_actionToggleRowSelectMode;
@@ -548,6 +548,8 @@ public class TourDataEditorView extends ViewPart implements ISaveablePart2, ITou
 	private Label								_lblTimeZone;
 	//
 	private Link								_linkDefaultTimeZone;
+	private Link								_linkGeoTimeZone;
+	private Link								_linkRemoveTimeZone;
 	private Link								_linkTag;
 	private Link								_linkTourType;
 	//
@@ -1369,19 +1371,7 @@ public class TourDataEditorView extends ViewPart implements ISaveablePart2, ITou
 		saveTourIntoDB();
 	}
 
-	private void actionSetDefaultTimeZone() {
-
-		// select default time zone
-		_comboTimeZone.select(TimeTools.getTimeZoneIndex_Default());
-		_isTimeZoneManuallyModified = true;
-
-		updateModelFromUI();
-		setTourDirty();
-
-		updateUI_TimeZoneDecorator();
-	}
-
-	void actionSetStartDistanceTo0000() {
+	void actionSetStartDistanceTo_0000() {
 
 		// it is already checked if a valid data serie is available and first distance is > 0
 
@@ -1407,6 +1397,53 @@ public class TourDataEditorView extends ViewPart implements ISaveablePart2, ITou
 		}
 
 		updateUI_AfterDistanceModifications();
+	}
+
+	private void actionTimeZone_Remove() {
+
+		_tourData.setTimeZoneId(null);
+
+		// select default time zone
+		_comboTimeZone.select(TimeTools.getTimeZoneIndex_Default());
+		_isTimeZoneManuallyModified = false;
+
+		updateModelFromUI();
+		setTourDirty();
+
+		updateUI_TimeZone();
+	}
+
+	private void actionTimeZone_SetDefault() {
+
+		// select default time zone
+		_comboTimeZone.select(TimeTools.getTimeZoneIndex_Default());
+		_isTimeZoneManuallyModified = true;
+
+		updateModelFromUI();
+		setTourDirty();
+
+		updateUI_TimeZone();
+	}
+
+	private void actionTimeZone_SetFromGeo() {
+
+		if (_tourData.latitudeSerie == null || _tourData.latitudeSerie.length == 0) {
+			return;
+		}
+
+		// select time zone from geo position
+		final double lat0 = _tourData.latitudeSerie[0];
+		final double lat1 = _tourData.longitudeSerie[0];
+
+		final int timeZoneIndex = TimeTools.getTimeZoneIndex(lat0, lat1);
+
+		_comboTimeZone.select(timeZoneIndex);
+		_isTimeZoneManuallyModified = true;
+
+		updateModelFromUI();
+		setTourDirty();
+
+		updateUI_TimeZone();
 	}
 
 	void actionToggleReadEditMode() {
@@ -1826,7 +1863,7 @@ public class TourDataEditorView extends ViewPart implements ISaveablePart2, ITou
 		_actionComputeDistanceValues = new ActionComputeDistanceValues(this);
 		_actionToggleRowSelectMode = new ActionToggleRowSelectMode(this);
 		_actionToggleReadEditMode = new ActionToggleReadEditMode(this);
-		_actionSetStartDistanceTo0 = new ActionSetStartDistanceTo0(this);
+		_actionSetStartDistanceTo_0 = new ActionSetStartDistanceTo0(this);
 
 		_actionOpenAdjustAltitudeDialog = new ActionOpenAdjustAltitudeDialog(this, true);
 		_actionOpenMarkerDialog = new ActionOpenMarkerDialog(this, false);
@@ -2335,9 +2372,9 @@ public class TourDataEditorView extends ViewPart implements ISaveablePart2, ITou
 		return txtField;
 	}
 
-	private void createUI_LabelSeparator(final Composite parent) {
+	private Label createUI_LabelSeparator(final Composite parent) {
 
-		_tk.createLabel(parent, UI.EMPTY_STRING);
+		return _tk.createLabel(parent, UI.EMPTY_STRING);
 	}
 
 	private void createUI_SectionSeparator(final Composite parent) {
@@ -2507,10 +2544,13 @@ public class TourDataEditorView extends ViewPart implements ISaveablePart2, ITou
 			createUISection_122_DateTime_Col1(container);
 			createUISection_123_DateTime_Col2(container);
 
+			createUISection_129_DateTime_TimeZone(container);
+
+			final Label label = createUI_LabelSeparator(container);
+			GridDataFactory.fillDefaults().span(2, 1).applyTo(label);
+
 			createUISection_127_DateTime_Col1(container);
 			createUISection_128_DateTime_Col2(container);
-
-			createUISection_129_DateTime_TimeZone(container);
 		}
 	}
 
@@ -2693,7 +2733,7 @@ public class TourDataEditorView extends ViewPart implements ISaveablePart2, ITou
 				.span(2, 1)
 				.applyTo(container);
 		GridLayoutFactory.fillDefaults()//
-				.numColumns(3)
+				.numColumns(2)
 				.applyTo(container);
 //		container.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_MAGENTA));
 		{
@@ -2720,7 +2760,7 @@ public class TourDataEditorView extends ViewPart implements ISaveablePart2, ITou
 						updateModelFromUI();
 						setTourDirty();
 
-						updateUI_TimeZoneDecorator();
+						updateUI_TimeZone();
 					}
 				});
 
@@ -2751,18 +2791,58 @@ public class TourDataEditorView extends ViewPart implements ISaveablePart2, ITou
 			}
 
 			{
-				// link: set default
+				// spacer
+				final Label label = createUI_LabelSeparator(container);
+				_firstColumnControls.add(label);
+			}
 
-				_linkDefaultTimeZone = new Link(container, SWT.NONE);
-				_linkDefaultTimeZone.setText(Messages.Tour_Editor_Link_SetDefautTimeZone);
-				_linkDefaultTimeZone.setToolTipText(Messages.Tour_Editor_Link_SetDefautTimeZone_Tooltip);
-				_linkDefaultTimeZone.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(final SelectionEvent e) {
-						actionSetDefaultTimeZone();
+			{
+				final Composite actionContainer = new Composite(container, SWT.NONE);
+				GridDataFactory.fillDefaults().grab(false, false).applyTo(actionContainer);
+				GridLayoutFactory.fillDefaults().numColumns(3).applyTo(actionContainer);
+				{
+					{
+						// link: set default
+
+						_linkDefaultTimeZone = new Link(actionContainer, SWT.NONE);
+						_linkDefaultTimeZone.setText(Messages.Tour_Editor_Link_SetDefautTimeZone);
+						_linkDefaultTimeZone.addSelectionListener(new SelectionAdapter() {
+							@Override
+							public void widgetSelected(final SelectionEvent e) {
+								actionTimeZone_SetDefault();
+							}
+						});
+						_tk.adapt(_linkDefaultTimeZone, true, true);
 					}
-				});
-				_tk.adapt(_linkDefaultTimeZone, true, true);
+					{
+						// link: from geo
+
+						_linkGeoTimeZone = new Link(actionContainer, SWT.NONE);
+						_linkGeoTimeZone.setText(Messages.Tour_Editor_Link_SetGeoTimeZone);
+						_linkGeoTimeZone.setToolTipText(Messages.Tour_Editor_Link_SetGeoTimeZone_Tooltip);
+						_linkGeoTimeZone.addSelectionListener(new SelectionAdapter() {
+							@Override
+							public void widgetSelected(final SelectionEvent e) {
+								actionTimeZone_SetFromGeo();
+							}
+						});
+						_tk.adapt(_linkGeoTimeZone, true, true);
+					}
+					{
+						// link: remove
+
+						_linkRemoveTimeZone = new Link(actionContainer, SWT.NONE);
+						_linkRemoveTimeZone.setText(Messages.Tour_Editor_Link_RemoveTimeZone);
+						_linkRemoveTimeZone.setToolTipText(Messages.Tour_Editor_Link_RemoveTimeZone_Tooltip);
+						_linkRemoveTimeZone.addSelectionListener(new SelectionAdapter() {
+							@Override
+							public void widgetSelected(final SelectionEvent e) {
+								actionTimeZone_Remove();
+							}
+						});
+						_tk.adapt(_linkRemoveTimeZone, true, true);
+					}
+				}
 			}
 		}
 	}
@@ -4464,7 +4544,7 @@ public class TourDataEditorView extends ViewPart implements ISaveablePart2, ITou
 
 		_actionModifyColumns.setEnabled(isCellEditorInactive && isTableViewerTab);// && isTourValid);
 
-		_actionSetStartDistanceTo0.setEnabled(//
+		_actionSetStartDistanceTo_0.setEnabled(//
 				isCellEditorInactive && isNotManualTour && canEdit && isDistanceLargerThan0);
 
 		_actionDeleteDistanceValues.setEnabled(//
@@ -4519,6 +4599,7 @@ public class TourDataEditorView extends ViewPart implements ISaveablePart2, ITou
 
 		final float[] serieDistance = _tourData == null ? null : _tourData.distanceSerie;
 		final boolean isDistanceSerie = serieDistance != null && serieDistance.length > 0;
+		final boolean isGeoAvailable = _tourData.latitudeSerie != null && _tourData.latitudeSerie.length > 0;
 
 		_comboTitle.setEnabled(canEdit);
 		_txtDescription.setEnabled(canEdit);
@@ -4542,6 +4623,8 @@ public class TourDataEditorView extends ViewPart implements ISaveablePart2, ITou
 		_dtStartTime.setEnabled(canEdit);
 		_comboTimeZone.setEnabled(canEdit);
 		_linkDefaultTimeZone.setEnabled(canEdit);
+		_linkRemoveTimeZone.setEnabled(canEdit);
+		_linkGeoTimeZone.setEnabled(canEdit && isGeoAvailable);
 
 		_timeRecording.setEditMode(isManualAndEdit);
 		_timePaused.setEditMode(isManualAndEdit);
@@ -4646,7 +4729,7 @@ public class TourDataEditorView extends ViewPart implements ISaveablePart2, ITou
 		menuMgr.add(_actionDeleteTimeSlicesKeepTime);
 
 		menuMgr.add(new Separator());
-		menuMgr.add(_actionSetStartDistanceTo0);
+		menuMgr.add(_actionSetStartDistanceTo_0);
 		menuMgr.add(_actionDeleteDistanceValues);
 		menuMgr.add(_actionComputeDistanceValues);
 
@@ -5938,7 +6021,7 @@ public class TourDataEditorView extends ViewPart implements ISaveablePart2, ITou
 		_actionToggleRowSelectMode.setChecked(_isRowEditMode);
 		_actionToggleReadEditMode.setChecked(_isEditMode);
 
-		_actionSetStartDistanceTo0.setText(NLS.bind(
+		_actionSetStartDistanceTo_0.setText(NLS.bind(
 				Messages.TourEditor_Action_SetStartDistanceTo0,
 				UI.UNIT_LABEL_DISTANCE));
 
@@ -6669,7 +6752,7 @@ public class TourDataEditorView extends ViewPart implements ISaveablePart2, ITou
 		enableControls();
 
 		// this action displays selected unit label
-		_actionSetStartDistanceTo0.setText(NLS.bind(
+		_actionSetStartDistanceTo_0.setText(NLS.bind(
 				Messages.TourEditor_Action_SetStartDistanceTo0,
 				UI.UNIT_LABEL_DISTANCE));
 
@@ -6837,7 +6920,7 @@ public class TourDataEditorView extends ViewPart implements ISaveablePart2, ITou
 			double lat0 = Double.MIN_VALUE;
 			double lat1 = Double.MIN_VALUE;
 
-			if (_tourData.latitudeSerie != null && _tourData.longitudeSerie != null) {
+			if (_tourData.latitudeSerie != null && _tourData.latitudeSerie.length > 0) {
 				lat0 = _tourData.latitudeSerie[0];
 				lat1 = _tourData.longitudeSerie[0];
 			}
@@ -6850,16 +6933,11 @@ public class TourDataEditorView extends ViewPart implements ISaveablePart2, ITou
 		}
 		_comboTimeZone.select(timeZoneIndex);
 
-		final String tourStartTooltip = NLS.bind(//
-				Messages.Tour_Editor_Label_TourStartTime_Tooltip,
-				tourStartTime.withZoneSameInstant(ZoneOffset.UTC).format(TimeTools.Formatter_DateTime_SM)
-//				tourStartTime.format(DateTimeFormatter.ISO_INSTANT)
-				);
+		_linkDefaultTimeZone.setToolTipText(NLS.bind(
+				Messages.Tour_Editor_Link_SetDefautTimeZone_Tooltip,
+				TimeTools.getDefaultTimeZoneId()));
 
-		_lblStartTime.setToolTipText(tourStartTooltip);
-		_lblTimeZone.setToolTipText(tourStartTooltip);
-
-		updateUI_TimeZoneDecorator();
+		updateUI_TimeZone();
 
 		// tour type/tags
 		net.tourbook.ui.UI.updateUI_TourType(_tourData, _lblTourType, true);
@@ -7100,17 +7178,34 @@ public class TourDataEditorView extends ViewPart implements ISaveablePart2, ITou
 		_timePaused.setTime(pausedTime / 3600, ((pausedTime % 3600) / 60), ((pausedTime % 3600) % 60));
 	}
 
-	private void updateUI_TimeZoneDecorator() {
+	private void updateUI_TimeZone() {
 
-		// show/hide time zone decorator
-		if (_tourData.isDefaultTimeZone()) {
+		/*
+		 * Update tooltip
+		 */
+		final ZonedDateTime tourStartTime = _tourData.getTourStartTime();
+		final ZonedDateTime tourStartTimeUTC = tourStartTime.withZoneSameInstant(ZoneOffset.UTC);
 
-			// show info
-			_decoTimeZone.show();
+		final String tourStartTooltip = NLS.bind(//
+				Messages.Tour_Editor_Label_TourStartTime_Tooltip,
+				tourStartTimeUTC.format(TimeTools.Formatter_DateTime_SM));
 
-		} else {
+		_lblStartTime.setToolTipText(tourStartTooltip);
+		_lblTimeZone.setToolTipText(tourStartTooltip);
+		_comboTimeZone.setToolTipText(tourStartTooltip);
+
+		/*
+		 * Show/hide time zone decorator
+		 */
+		if (_tourData.hasATimeZone()) {
+
 			// hide info
 			_decoTimeZone.hide();
+
+		} else {
+
+			// show info that a time zone is not set
+			_decoTimeZone.show();
 		}
 	}
 
