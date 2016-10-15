@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005, 2012  Wolfgang Schramm and Contributors
+ * Copyright (C) 2005, 2016 Wolfgang Schramm and Contributors
  * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -106,6 +106,7 @@ public class PrefPagePhotoImageCache extends PreferencePage implements IWorkbenc
 			_spinnerNumberOfImages.setMinimum(0);
 			_spinnerNumberOfImages.setMaximum(Integer.MAX_VALUE);
 			_spinnerNumberOfImages.addMouseWheelListener(new MouseWheelListener() {
+				@Override
 				public void mouseScrolled(final MouseEvent event) {
 					Util.adjustSpinnerValueOnMouseScroll(event);
 				}
@@ -166,6 +167,7 @@ public class PrefPagePhotoImageCache extends PreferencePage implements IWorkbenc
 			_spinnerNumberOfOriginalImages.setMinimum(1);
 			_spinnerNumberOfOriginalImages.setMaximum(50);
 			_spinnerNumberOfOriginalImages.addMouseWheelListener(new MouseWheelListener() {
+				@Override
 				public void mouseScrolled(final MouseEvent event) {
 					Util.adjustSpinnerValueOnMouseScroll(event);
 				}
@@ -189,6 +191,7 @@ public class PrefPagePhotoImageCache extends PreferencePage implements IWorkbenc
 		return _prefStore;
 	}
 
+	@Override
 	public void init(final IWorkbench workbench) {}
 
 	private void onSelectGetImageHandels() {
@@ -199,6 +202,7 @@ public class PrefPagePhotoImageCache extends PreferencePage implements IWorkbenc
 		final int maxTest = 50000;
 
 		BusyIndicator.showWhile(display, new Runnable() {
+			@Override
 			public void run() {
 
 				try {

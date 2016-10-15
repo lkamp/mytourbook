@@ -1857,8 +1857,8 @@ public class Map extends Canvas {
 
 			final GC gc = event.gc;
 
-			final long startImage = System.nanoTime();
-			// TODO remove SYSTEM.OUT.PRINTLN
+//			final long startImage = System.nanoTime();
+//			// TODO remove SYSTEM.OUT.PRINTLN
 
 			gc.drawImage(_mapImage, 0, 0);
 
@@ -1966,11 +1966,11 @@ public class Map extends Canvas {
 		// get time when the redraw is requested
 		final long requestedRedrawTime = System.currentTimeMillis();
 
-		if (requestedRedrawTime > _lastMapDrawTime + 100) {
+		if (requestedRedrawTime > _lastMapDrawTime + 50) {
 
 			// update display even when this is not the last created runnable
 
-//			System.out.println("queueMapRedraw()-time > 50\t" + (_requestedRedrawTime - _lastMapDrawTime));
+//			System.out.println("Map redraw time > 100\t" + (requestedRedrawTime - _lastMapDrawTime));
 //			// TODO remove SYSTEM.OUT.PRINTLN
 
 			_display.syncExec(new Runnable() {
@@ -1982,7 +1982,7 @@ public class Map extends Canvas {
 						return;
 					}
 
-					paint_10_PaintMapImage();
+					paint_10_MapImage();
 				}
 			});
 
@@ -2012,7 +2012,7 @@ public class Map extends Canvas {
 						return;
 					}
 
-					paint_10_PaintMapImage();
+					paint_10_MapImage();
 				}
 			};
 
@@ -2026,7 +2026,7 @@ public class Map extends Canvas {
 	/**
 	 * Draws map tiles/legend/scale into the map image which is displayed in the SWT paint event.
 	 */
-	private void paint_10_PaintMapImage() {
+	private void paint_10_MapImage() {
 
 		if (isDisposed()) {
 			return;
@@ -2074,7 +2074,7 @@ public class Map extends Canvas {
 //		System.out.println(net.tourbook.common.UI.timeStamp()
 //				+ " "
 //				+ ((int) (((System.nanoTime() - start) / 1000000)) + " ms\t")
-//				+ ((int) (1000f / ((System.nanoTime() - start) / 1000000)) + " fps") //
+//				+ ((int) (1000f / ((System.nanoTime() - start) / 1000000.0)) + " fps") //
 //		);
 //		// TODO remove SYSTEM.OUT.PRINTLN
 

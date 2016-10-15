@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005, 2014  Wolfgang Schramm and Contributors
+ * Copyright (C) 2005, 2016 Wolfgang Schramm and Contributors
  *
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -1441,7 +1441,6 @@ public class TourMapPainter extends MapPainter {
 
 					// this condition is an inline for:
 					// tileViewport.contains(tileWorldPos.x, tileWorldPos.y)
-
 					if ((tourWorldPixelX >= tileWorldPixelX)
 							&& (tourWorldPixelY >= tileWorldPixelY)
 							&& tourWorldPixelX < (tileWorldPixelX + tileWidth)

@@ -16,7 +16,6 @@
 package de.byteholder.geoclipse.map;
 
 import java.io.File;
-import java.net.URI;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -54,14 +53,13 @@ import de.byteholder.geoclipse.preferences.IMappingPreferences;
  */
 public class TileImageCache {
 
-
 	/**
 	 * relative OS path for storing offline map image files
 	 */
-	public static final String								TILE_OFFLINE_CACHE_OS_PATH		= "offline-map";							//$NON-NLS-1$
+	public static final String								TILE_OFFLINE_CACHE_OS_PATH	= "offline-map";							//$NON-NLS-1$
 
-	private static final ConcurrentHashMap<String, Image>	_imageCache						= new ConcurrentHashMap<String, Image>();
-	private static final ConcurrentLinkedQueue<String>		_imageCacheFifo					= new ConcurrentLinkedQueue<String>();
+	private static final ConcurrentHashMap<String, Image>	_imageCache					= new ConcurrentHashMap<String, Image>();
+	private static final ConcurrentLinkedQueue<String>		_imageCacheFifo				= new ConcurrentLinkedQueue<String>();
 
 	/**
 	 * Path from user preferences where tile images are stored
@@ -70,8 +68,8 @@ public class TileImageCache {
 
 	private static boolean									_useOffLineCache;
 
-	private static final ReentrantLock						CREATE_DIR_LOCK					= new ReentrantLock();
-	private static final ReentrantLock						CACHE_LOCK						= new ReentrantLock();
+	private static final ReentrantLock						CREATE_DIR_LOCK				= new ReentrantLock();
+	private static final ReentrantLock						CACHE_LOCK					= new ReentrantLock();
 
 	/**
 	 * This display is used because {@link Display#getDefault()} is synchronized which propably
@@ -79,7 +77,7 @@ public class TileImageCache {
 	 */
 	private Display											_display;
 
-	private int												_maxCacheSize					= 10;
+	private int												_maxCacheSize				= 10;
 
 	/**
 	 * @param factoryInfo
@@ -143,10 +141,6 @@ public class TileImageCache {
 
 			_osTileCachePath = tileCachePath.toOSString();
 		}
-	}
-
-	public boolean contains(final URI uri) {
-		return _imageCache.containsKey(uri);
 	}
 
 	/**
@@ -241,7 +235,7 @@ public class TileImageCache {
 				try {
 
 					/*
-					 * load image with the constructor which is 20 times faster than loading the
+					 * Load image with the constructor, this is 20 times faster than loading the
 					 * image with an imageloader
 					 */
 
@@ -701,6 +695,7 @@ public class TileImageCache {
 			//
 			// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			_display.syncExec(new Runnable() {
+				@Override
 				public void run() {
 
 					final GC gcTileImage = new GC(dimmedImage);

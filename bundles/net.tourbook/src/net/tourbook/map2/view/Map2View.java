@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005, 2015 Wolfgang Schramm and Contributors
+ * Copyright (C) 2005, 2016 Wolfgang Schramm and Contributors
  * 
  * This program is free software; you can redistribute it and/or modify it under
  * the terms of the GNU General Public License as published by the Free Software
@@ -197,13 +197,8 @@ public class Map2View extends ViewPart implements IMapContextProvider, IPhotoEve
 	static final String						PREF_SHOW_TILE_BORDER						= "MapDebug.ShowTileBorder";								//$NON-NLS-1$
 	static final String						PREF_DEBUG_MAP_DIM_LEVEL					= "MapDebug.MapDimLevel";									//$NON-NLS-1$
 
-	private final IPreferenceStore			_prefStore									= TourbookPlugin
-																								.getDefault()
-																								.getPreferenceStore();
-	private final IDialogSettings			_state										= TourbookPlugin
-																								.getDefault()
-																								.getDialogSettingsSection(
-																										ID);
+	private final IPreferenceStore			_prefStore									= TourbookPlugin.getPrefStore();
+	private final IDialogSettings			_state										= TourbookPlugin.getState(ID);
 
 	private boolean							_isPartVisible;
 
@@ -2059,10 +2054,6 @@ public class Map2View extends ViewPart implements IMapContextProvider, IPhotoEve
 
 	private void paintPhotos(final ArrayList<Photo> allNewPhotos) {
 
-		/*
-		 * TESTING if a map redraw can be avoided, 15.6.2015
-		 */
-// DISABLED BECAUSE PHOTOS ARE NOT ALWAYS DISPLAYED
 		final int allNewPhotoHash = allNewPhotos.hashCode();
 		if (allNewPhotoHash == _hashAllPhotos) {
 			return;
@@ -2073,18 +2064,6 @@ public class Map2View extends ViewPart implements IMapContextProvider, IPhotoEve
 		_hashAllPhotos = _allPhotos.hashCode();
 
 		runPhotoFilter();
-
-//		// dump tour photos
-//		System.out.println(net.tourbook.common.UI.timeStampNano() + " paintPhotos\t");
-//		// TODO remove SYSTEM.OUT.PRINTLN
-//
-//		for (final Photo photo : allPhotos) {
-//			System.out.println(net.tourbook.common.UI.timeStampNano()
-//					+ " "
-//					+ photo.imageFileName
-//					+ ("\t" + new DateTime(photo.adjustedTime)));
-//			// TODO remove SYSTEM.OUT.PRINTLN
-//		}
 
 		if (_isShowPhoto && _isMapSynchedWithPhoto) {
 			centerPhotos(_filteredPhotos, false);
