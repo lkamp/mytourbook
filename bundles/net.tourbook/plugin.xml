@@ -631,7 +631,8 @@
 			
 				<separator
 					name="sep_Map"
-					visible="true"/>
+					visible="true"
+				/>
 
 				<!-- 2D map -->
 				<command
@@ -640,6 +641,14 @@
 					label="%command_tour_map_name"
 					mnemonic="%command_tour_map_name_Mnemonic"
 					tooltip="%command_tour_map_name_tooltip"/>
+
+				<!-- 2D map mf -->
+				<command
+					commandId="net.tourbook.mapping.command.tourMap2mf"
+					icon="icons/map2mf-view.png"
+					label="%Command_Tour_Map2mf_Name"
+					mnemonic="%Command_Tour_Map2mf_Name_Mnemonic"
+					tooltip="%Command_Tour_Map2mf_Name_Tooltip"/>
 
 
 			<!-- Tour items -->
@@ -874,6 +883,13 @@
 					icon="icons/earth-globe-abstract.png"
 					label="%command_tour_map_name"
 					tooltip="%command_tour_map_name_tooltip"/>
+
+				<!-- 2D Map mf -->
+				<command
+					commandId="net.tourbook.mapping.command.tourMap2mf"
+					icon="icons/map2mf-view.png"
+					label="%Command_Tour_Map2mf_Name"
+					tooltip="%Command_Tour_Map2mf_Name_Tooltip"/>
 				
 			</toolbar>
 		</menuContribution>
@@ -1221,16 +1237,21 @@
             />
 
 
-      <command
-            id="net.tourbook.command.tourDataEditor"
-            name="%command_view_tourEditor"
-            defaultHandler="net.tourbook.ui.action.ActionHandlerTourDataEditor"
-            />
-      <command
-            id="net.tourbook.mapping.command.tourMap"
-            name="%command_tour_map_name"
-            defaultHandler="net.tourbook.map2.action.ActionHandlerOpenTourMapView"
-            />
+		<command
+			id="net.tourbook.command.tourDataEditor"
+			name="%command_view_tourEditor"
+			defaultHandler="net.tourbook.ui.action.ActionHandlerTourDataEditor"
+			/>
+		<command
+			id="net.tourbook.mapping.command.tourMap"
+			name="%command_tour_map_name"
+			defaultHandler="net.tourbook.map2.action.ActionHandlerOpenTourMapView"
+			/>
+		<command
+			id="net.tourbook.mapping.command.tourMap2mf"
+			name="%Command_Tour_Map2mf_Name"
+			defaultHandler="net.tourbook.map2mf.action.ActionHandlerOpenTourMapView"
+			/>
 
       <command
             id="net.tourbook.command.createNewTour"
@@ -1649,6 +1670,14 @@
 				icon="icons/earth-globe-abstract.png"
 				id="net.tourbook.map2.view.Map2ViewId"
 				name="%view_name_tour_map"
+			/>
+
+			<view
+				category="net.tourbook.category.map"
+				class="net.tourbook.map2mf.view.Map2mfView"
+				icon="icons/map2mf-view.png"
+				id="net.tourbook.map2mf.view.Map2mfViewId"
+				name="%View_Name_Map2mf"
 			/>
 	
 	
