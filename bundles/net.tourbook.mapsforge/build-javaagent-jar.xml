@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!-- Run this build file whenever a class file in the IoCTransformingAgent changes, 
+	to update the jar file which will be included when the DateClient application starts up
+-->
+<project name="MapTransformingAgent" default="jar">
+	
+    <target name="jar" >
+        <jar destfile="map-transformer-agent.jar" 
+        	 manifest="resources/MANIFEST.MF"
+        	 basedir="bin">
+        </jar>
+    </target>
+
+</project>
+

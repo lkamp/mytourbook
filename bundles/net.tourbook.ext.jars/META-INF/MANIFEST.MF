@@ -5,6 +5,7 @@ Bundle-SymbolicName: net.tourbook.ext.jars;singleton:=true
 Bundle-Version: 16.10.0.qualifier
 Eclipse-BuddyPolicy: registered
 Bundle-Vendor: MyTourbook
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: joda-time-2.9.4.jar,
  c3p0-0.9.1.2.jar,
  xpp3_min-1.1.4c.jar,
@@ -187,4 +188,3 @@ Export-Package: com.enterprisedt,
  org.json,
  org.xmlpull.mxp1,
  org.xmlpull.v1
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7

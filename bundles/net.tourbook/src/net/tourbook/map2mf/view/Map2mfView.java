@@ -15,6 +15,7 @@
  *******************************************************************************/
 package net.tourbook.map2mf.view;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Frame;
@@ -26,8 +27,6 @@ import java.awt.event.MouseWheelEvent;
 import java.io.File;
 
 import javax.swing.SwingUtilities;
-
-import net.tourbook.application.TourbookPlugin;
 
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -54,6 +53,8 @@ import org.mapsforge.map.layer.download.tilesource.TileSource;
 import org.mapsforge.map.layer.renderer.MapWorkerPool;
 import org.mapsforge.map.model.MapViewPosition;
 import org.mapsforge.map.reader.ReadBuffer;
+
+import net.tourbook.application.TourbookPlugin;
 
 /**
  * This map is based on mapsforge (2Dmf) maps http://mapsforge.org/
@@ -181,6 +182,8 @@ public class Map2mfView extends ViewPart {
 
 	private void createUI(final Composite parent) {
 
+		setup_Component();
+
 		/*
 		 * Set a Windows specific AWT property that prevents heavyweight components from erasing
 		 * their background. Note that this is a global property and cannot be scoped. It might not
@@ -189,6 +192,8 @@ public class Map2mfView extends ViewPart {
 		try {
 //			System.setProperty("sun.awt.noerasebackground", "true");
 		} catch (final NoSuchMethodError error) {}
+
+//		Toolkit.getDefaultToolkit().setDynamicLayout(false);
 
 		// Increase read buffer limit
 		ReadBuffer.setMaximumBufferSize(6500000);
@@ -201,9 +206,18 @@ public class Map2mfView extends ViewPart {
 
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(parent);
 
-		_mapContainer = new Composite(parent, SWT.EMBEDDED | SWT.NO_BACKGROUND);
+		_mapContainer = new Composite(
+				parent,
+				SWT.EMBEDDED /* | SWT.NO_BACKGROUND | SWT.NO_REDRAW_RESIZE */);
 		{
 			_awtFrame = SWT_AWT.new_Frame(_mapContainer);
+
+//			mapView.setBackground(Color.RED);
+//			_awtFrame.setBackground(Color.green);
+			_awtFrame.setBackground(new Color(80, 80, 80, 255));
+//			_awtFrame.setBackground(null);
+//			_awtFrame.setUndecorated(true);
+
 			_awtFrame.add(mapView);
 
 			setup_SWT_AWT_MouseWheelListener(_mapContainer, _awtFrame);
@@ -229,6 +243,11 @@ public class Map2mfView extends ViewPart {
 	@Override
 	public void setFocus() {
 
+	}
+
+	private void setup_Component() {
+
+//		java.awt.Container
 	}
 
 	/**
