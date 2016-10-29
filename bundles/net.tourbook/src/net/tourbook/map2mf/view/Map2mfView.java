@@ -64,11 +64,11 @@ public class Map2mfView extends ViewPart {
 	public static final String			ID					= "net.tourbook.map2mf.view.Map2mfViewId";	//$NON-NLS-1$
 
 	private static final GraphicFactory	GRAPHIC_FACTORY		= AwtGraphicFactory.INSTANCE;
+
 	private static final boolean		SHOW_DEBUG_LAYERS	= true;
-
 	private final IPreferenceStore		_prefStore			= TourbookPlugin.getPrefStore();
-	private final IDialogSettings		_state				= TourbookPlugin.getState(ID);
 
+	private final IDialogSettings		_state				= TourbookPlugin.getState(ID);
 	private Composite					_mapContainer;
 
 	private Frame						_awtFrame;
@@ -210,6 +210,29 @@ public class Map2mfView extends ViewPart {
 				parent,
 				SWT.EMBEDDED /* | SWT.NO_BACKGROUND | SWT.NO_REDRAW_RESIZE */);
 		{
+//			final String className = "sun.awt.windows.WEmbeddedFrame";
+//			final String className = "net.tourbook.map2mf.view.MTWEmbeddedFrame";
+//			final String className = "java.awt.Container";
+
+//			try {
+//
+//				final URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+//
+//				final Class<?> pluginClass = Class.forName(className);
+//
+//				final Class<?> sysClass = sysloader.loadClass(className);
+//
+//				int a = 0;
+//				a++;
+//
+//
+//			} catch (final ClassNotFoundException e) {
+//				StatusUtil.log(e);
+//				return;
+//			}
+//
+//			SWT_AWT.embeddedFrameClass = className;
+
 			_awtFrame = SWT_AWT.new_Frame(_mapContainer);
 
 //			mapView.setBackground(Color.RED);
