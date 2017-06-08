@@ -2026,6 +2026,7 @@ public class Messages extends NLS {
 	public static String		tourCatalog_view_action_create_left_marker;
 	public static String		tourCatalog_view_action_create_marker;
 	public static String		tourCatalog_view_action_create_reference_tour;
+	public static String		tourCatalog_view_action_create_geo_reference_tour;
 	public static String		tourCatalog_view_action_create_right_marker;
 	public static String		tourCatalog_view_action_delete_tours;
 	public static String		tourCatalog_view_action_link;

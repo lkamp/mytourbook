@@ -40,6 +40,7 @@ import net.tourbook.ui.action.ActionEditQuick;
 import net.tourbook.ui.action.ActionEditTour;
 import net.tourbook.ui.action.ActionOpenTour;
 import net.tourbook.ui.action.ActionSetTourTypeMenu;
+import net.tourbook.ui.tourChart.action.ActionCreateGeoRefTour;
 import net.tourbook.ui.tourChart.action.ActionCreateMarkerFromSlider;
 import net.tourbook.ui.tourChart.action.ActionCreateMarkerFromValuePoint;
 import net.tourbook.ui.tourChart.action.ActionCreateRefTour;
@@ -59,6 +60,7 @@ public class TourChartContextProvider implements IChartContextProvider, ITourPro
 
 //	private ActionConvertIntoSharedMarker		_actionConvertIntoSharedMarker;
 	private ActionCreateRefTour					_actionCreateRefTour;
+	private ActionCreateGeoRefTour				_actionCreateGeoRefTour;
 	private ActionCreateMarkerFromSlider		_actionCreateMarkerFromSlider;
 	private ActionCreateMarkerFromSlider		_actionCreateMarkerFromSliderLeft;
 	private ActionCreateMarkerFromSlider		_actionCreateMarkerFromSliderRight;
@@ -102,6 +104,7 @@ public class TourChartContextProvider implements IChartContextProvider, ITourPro
 		final TourChart tourChart = _tourChartViewer.getTourChart();
 
 		_actionCreateRefTour = new ActionCreateRefTour(tourChart);
+		_actionCreateGeoRefTour = new ActionCreateGeoRefTour(tourChart);
 
 		_actionCreateMarkerFromSlider = new ActionCreateMarkerFromSlider(
 				this,
@@ -303,6 +306,7 @@ public class TourChartContextProvider implements IChartContextProvider, ITourPro
 			}
 
 			menuMgr.add(_actionCreateRefTour);
+			menuMgr.add(_actionCreateGeoRefTour);
 
 			menuMgr.add(new Separator());
 			menuMgr.add(_actionOpenMarkerDialog);
@@ -326,6 +330,7 @@ public class TourChartContextProvider implements IChartContextProvider, ITourPro
 			_actionCreateMarkerFromSliderRight.setEnabled(isTourSaved);
 
 			_actionCreateRefTour.setEnabled(canCreateRefTours);
+			_actionCreateGeoRefTour.setEnabled(canCreateRefTours);
 
 			_actionOpenMarkerDialog.setEnabled(isTourSaved);
 		}
